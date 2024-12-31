@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import ShinyButton from "@/components/ui/shiny-button";
-import StaggeredFadeLoader from "@/components/ui/staggered-fade-loader";
+import WhirlpoolLoader from "@/components/ui/whirlpool-loader";
 
 export default function NotFound() {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function NotFound() {
       {/* Loader Overlay */}
       {!isBackendAwake && (
         <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
-          <StaggeredFadeLoader />
+          <WhirlpoolLoader />
           <p className="text-white mt-4">Flask application on Render is waking up...</p>
         </div>
       )}

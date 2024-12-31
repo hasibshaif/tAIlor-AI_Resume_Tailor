@@ -8,7 +8,7 @@ import axios from "axios";
 import { FaCloudDownloadAlt, FaCloudUploadAlt, FaTrash } from "react-icons/fa";
 import { Meteors } from "@/components/ui/meteors";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
-import StaggeredFadeLoader from "@/components/ui/staggered-fade-loader";
+import WhirlpoolLoader from "@/components/ui/whirlpool-loader";
 
 interface MasterResume {
   resumeUrl: string;
@@ -128,7 +128,7 @@ export default function TailorPage() {
       {/* Loader Overlay */}
       {!isBackendAwake && (
         <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
-          <StaggeredFadeLoader />
+          <WhirlpoolLoader />
           <p className="text-white mt-4">Flask application on Render is waking up...</p>
         </div>
       )}

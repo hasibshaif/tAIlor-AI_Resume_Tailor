@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import AiButton from "@/components/animata/button/ai-button";
 import StaggeredFadeLoader from "@/components/ui/staggered-fade-loader";
+import WhirlpoolLoader from "@/components/ui/whirlpool-loader";
 import { FaCloudDownloadAlt, FaArrowLeft, FaRedo } from "react-icons/fa";
 
 export default function CreateTailor() {
@@ -109,7 +110,7 @@ export default function CreateTailor() {
       {/* Loader Overlay */}
       {!isBackendAwake && (
         <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
-          <StaggeredFadeLoader />
+          <WhirlpoolLoader />
           <p className="text-white mt-4">Flask application on Render is waking up...</p>
         </div>
       )}

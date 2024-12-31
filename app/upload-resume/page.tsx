@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FileUpload } from "@/components/ui/file-upload";
-import StaggeredFadeLoader from "@/components/ui/staggered-fade-loader";
+import WhirlpoolLoader from "@/components/ui/whirlpool-loader";
 
 export default function UploadResume() {
   const router = useRouter();
@@ -100,7 +100,7 @@ export default function UploadResume() {
       {/* Loader Overlay */}
       {!isBackendAwake && (
         <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
-          <StaggeredFadeLoader />
+          <WhirlpoolLoader />
           <p className="text-white mt-4">Flask application on Render is waking up...</p>
         </div>
       )}
