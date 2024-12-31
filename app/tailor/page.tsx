@@ -17,7 +17,7 @@ interface MasterResume {
 interface TailoredResume {
   title: string;
   downloadUrl: string;
-  key: string; // Add the key for deletion
+  key: string;
 }
 
 export default function TailorPage() {
@@ -29,7 +29,7 @@ export default function TailorPage() {
 
   useEffect(() => {
     if (isLoaded && !userId) {
-      router.push("/"); // Redirect to home if not logged in
+      router.push("/");
     }
   }, [userId, isLoaded, router]);
 
@@ -42,7 +42,7 @@ export default function TailorPage() {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/get-master-resume`,
           {
             headers: {
-              userId, // Pass userId in headers
+              userId,
             },
           }
         );
@@ -53,7 +53,7 @@ export default function TailorPage() {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         console.error("No master resume found. Redirecting...");
-        router.push("/upload-resume"); // Redirect to upload page
+        router.push("/upload-resume");
       }
     };
     fetchMasterResume();
@@ -66,7 +66,7 @@ export default function TailorPage() {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/get-tailored-resumes`,
           {
             headers: {
-              userId, // Pass userId in headers
+              userId,
             },
           }
         );
@@ -85,9 +85,9 @@ export default function TailorPage() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/delete-tailored-resume`,
         {
           headers: {
-            userId, // Pass userId in headers
+            userId,
           },
-          params: { key }, // Pass the key to identify the file
+          params: { key },
         }
       );
 

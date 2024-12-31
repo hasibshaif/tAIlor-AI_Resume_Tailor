@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
 
-export default function StaggeredFadeLoader() {
+export default function StaggeredFadeLoader({ className = "" }: { className?: string }) {
   const circleVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
   };
 
   return (
-    <div className="flex items-center justify-center space-x-2">
+    <div className={`flex items-center justify-center space-x-2 ${className}`}>
       {[...Array(3)].map((_, index) => (
         <motion.div
           key={index}

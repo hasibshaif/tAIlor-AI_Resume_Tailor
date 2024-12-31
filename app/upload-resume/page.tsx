@@ -11,20 +11,45 @@ export default function UploadResume() {
   const router = useRouter();
   const { userId, isLoaded } = useAuth();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (isLoaded && !userId) {
-      router.push("/"); // Redirect to home if not logged in
+      router.push("/");
     }
   }, [userId, isLoaded, router]);
 
   const handleFileUpload = (files: File[]) => {
+    const validFileTypes = ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
+
+    if (!files.length) {
+      setErrorMessage("No file selected.");
+      toast.error("No file selected.");
+      return;
+    }
+
+    const file = files[0];
+    if (!validFileTypes.includes(file.type)) {
+      setErrorMessage("Invalid file type. Please upload a .docx file.");
+      toast.error("Invalid file type. Please upload a .docx file.");
+      return;
+    }
+
+    if (file.size > maxFileSize) {
+      setErrorMessage("File size exceeds the 2MB limit. Please upload a smaller file.");
+      toast.error("File size exceeds the 2MB limit. Please upload a smaller file.");
+      return;
+    }
+
+    setErrorMessage(null); // Clear any previous errors
     setSelectedFiles(files);
   };
 
   const handleUpload = async () => {
     if (!selectedFiles.length || !userId) {
       toast.error("Please select a .docx file.");
+      setErrorMessage("Please select a .docx file.");
       return;
     }
 
@@ -43,8 +68,8 @@ export default function UploadResume() {
         }
       );
       toast.success("Resume uploaded successfully!");
-      router.push("/tailor"); // Navigate only after success
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      router.push("/tailor");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Failed to upload resume. Try again.");
     }
@@ -61,12 +86,17 @@ export default function UploadResume() {
         {/* File Upload Component */}
         <FileUpload onChange={handleFileUpload} aria-label="Upload Resume" />
 
+        {/* Error Message */}
+        {errorMessage && (
+          <p className="text-sm text-red-600 mt-4">{errorMessage}</p>
+        )}
+
         {/* Upload Button */}
         <button
           onClick={handleUpload}
-          disabled={!selectedFiles.length}
+          disabled={!selectedFiles.length || !!errorMessage}
           className={`mt-6 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold transition w-full ${
-            selectedFiles.length
+            selectedFiles.length && !errorMessage
               ? "bg-black text-white hover:bg-gray-900"
               : "bg-gray-500 text-gray-200 cursor-not-allowed"
           }`}

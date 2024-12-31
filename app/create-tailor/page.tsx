@@ -21,7 +21,7 @@ export default function CreateTailor() {
 
   useEffect(() => {
     if (isLoaded && !userId) {
-      router.push("/"); // Redirect to home if not logged in
+      router.push("/");
     }
   }, [userId, isLoaded, router]);
 
@@ -36,7 +36,7 @@ export default function CreateTailor() {
             headers: { userId },
           }
         );
-        setMasterResume(true); // Master resume exists
+        setMasterResume(true);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         console.error("No master resume found. Redirecting...");
@@ -54,7 +54,12 @@ export default function CreateTailor() {
       toast.error("Please fill in all fields.");
       return;
     }
-
+  
+    if (jobDescription.length > 1000) {
+      toast.error("Job description exceeds the 1000-character limit.");
+      return;
+    }
+  
     setIsLoading(true);
     try {
       const response = await axios.post(
@@ -65,11 +70,11 @@ export default function CreateTailor() {
         },
         {
           headers: {
-            userId, // Pass userId in headers
+            userId,
           },
         }
       );
-
+  
       toast.success("Resume tailored successfully!");
       setTailoredResume(response.data.resumeUrl);
     } catch (error) {
@@ -162,10 +167,14 @@ export default function CreateTailor() {
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
                   disabled={!masterResume}
+                  maxLength={1000} // Set the maximum character limit here
                   className="w-full px-4 py-3 rounded-md bg-[#1d1d1d] text-gray-300 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Paste the job description here"
                   rows={5}
                 ></textarea>
+                  <div className="text-sm text-gray-400 mt-1">
+                    {jobDescription.length}/1000 characters
+                  </div>
               </div>
 
               {/* Submit Button */}
