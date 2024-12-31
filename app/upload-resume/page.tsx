@@ -6,12 +6,32 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FileUpload } from "@/components/ui/file-upload";
+import StaggeredFadeLoader from "@/components/ui/staggered-fade-loader";
 
 export default function UploadResume() {
   const router = useRouter();
   const { userId, isLoaded } = useAuth();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isBackendAwake, setIsBackendAwake] = useState(false);
+
+  useEffect(() => {
+    const checkBackend = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/health`);
+        if (response.ok) {
+          setIsBackendAwake(true);
+        } else {
+          setIsBackendAwake(false);
+        }
+      } catch (error) {
+        console.error("Backend is not reachable:", error);
+        setIsBackendAwake(false);
+      }
+    };
+
+    checkBackend();
+  }, []);
 
   useEffect(() => {
     if (isLoaded && !userId) {
@@ -21,7 +41,7 @@ export default function UploadResume() {
 
   const handleFileUpload = (files: File[]) => {
     const validFileTypes = ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-    const maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
+    const maxFileSize = 2 * 1024 * 1024;
 
     if (!files.length) {
       setErrorMessage("No file selected.");
@@ -42,7 +62,7 @@ export default function UploadResume() {
       return;
     }
 
-    setErrorMessage(null); // Clear any previous errors
+    setErrorMessage(null);
     setSelectedFiles(files);
   };
 
@@ -77,32 +97,42 @@ export default function UploadResume() {
 
   return userId ? (
     <div className="relative min-h-screen bg-gradient-to-br from-[#141313] to-[#2b2928] flex items-center justify-center px-4 sm:px-6">
-      <div className="bg-gradient-to-br from-yellow-400 via-yellow-700 to-orange-700 p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-md flex flex-col items-center">
-        {/* Heading */}
-        <h1 className="text-xl sm:text-2xl font-bold text-center text-black mb-6">
-          Upload Your Master Resume
-        </h1>
+      {/* Loader Overlay */}
+      {!isBackendAwake && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
+          <StaggeredFadeLoader />
+          <p className="text-white mt-4">Flask application on Render is waking up...</p>
+        </div>
+      )}
 
-        {/* File Upload Component */}
-        <FileUpload onChange={handleFileUpload} aria-label="Upload Resume" />
+      <div className={isBackendAwake ? "z-10" : "opacity-50 pointer-events-none"}>
+        <div className="bg-gradient-to-br from-yellow-400 via-yellow-700 to-orange-700 p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-md flex flex-col items-center">
+          {/* Heading */}
+          <h1 className="text-xl sm:text-2xl font-bold text-center text-black mb-6">
+            Upload Your Master Resume
+          </h1>
 
-        {/* Error Message */}
-        {errorMessage && (
-          <p className="text-sm text-red-600 mt-4">{errorMessage}</p>
-        )}
+          {/* File Upload Component */}
+          <FileUpload onChange={handleFileUpload} aria-label="Upload Resume" />
 
-        {/* Upload Button */}
-        <button
-          onClick={handleUpload}
-          disabled={!selectedFiles.length || !!errorMessage}
-          className={`mt-6 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold transition w-full ${
-            selectedFiles.length && !errorMessage
-              ? "bg-black text-white hover:bg-gray-900"
-              : "bg-gray-500 text-gray-200 cursor-not-allowed"
-          }`}
-        >
-          Upload Resume
-        </button>
+          {/* Error Message */}
+          {errorMessage && (
+            <p className="text-sm text-red-600 mt-4">{errorMessage}</p>
+          )}
+
+          {/* Upload Button */}
+          <button
+            onClick={handleUpload}
+            disabled={!selectedFiles.length || !!errorMessage}
+            className={`mt-6 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold transition w-full ${
+              selectedFiles.length && !errorMessage
+                ? "bg-black text-white hover:bg-gray-900"
+                : "bg-gray-500 text-gray-200 cursor-not-allowed"
+            }`}
+          >
+            Upload Resume
+          </button>
+        </div>
       </div>
     </div>
   ) : null;
