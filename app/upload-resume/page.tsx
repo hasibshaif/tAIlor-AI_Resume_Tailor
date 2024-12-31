@@ -101,7 +101,9 @@ export default function UploadResume() {
       {!isBackendAwake && (
         <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
           <WhirlpoolLoader />
-          <p className="text-white mt-4">Flask application on Render is waking up...</p>
+          <div className="bg-black/30 rounded-xl">
+            <p className="text-white mt-4">Flask application on Render is waking up...</p>
+          </div>
         </div>
       )}
 
