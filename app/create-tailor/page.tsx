@@ -111,7 +111,7 @@ export default function CreateTailor() {
       {!isBackendAwake && (
         <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
           <WhirlpoolLoader />
-          <div className="bg-black/30 rounded-xl">
+          <div className="bg-gray-800/50 rounded-xl flex justify-center items-center">
             <p className="text-white mt-4">Flask application on Render is waking up...</p>
           </div>
         </div>
